@@ -5,6 +5,8 @@ import { useMedia } from '../hooks/useMedia';
 import { useRoomStore } from '../store/roomStore';
 import VideoPlayer from '../components/VideoPlayer';
 import Controls from '../components/Controls';
+import webrtcService from '../services/webrtcService';
+import socketService from '../services/socketService';
 import './Room.css';
 
 const Room = () => {
@@ -17,6 +19,7 @@ const Room = () => {
   const { joinRoom, leaveRoom } = useRoom();
   const {
     startMedia,
+    stopMedia,
     toggleVideo,
     toggleAudio,
     startScreenShare,
@@ -36,6 +39,7 @@ const Room = () => {
   useEffect(() => {
     const initRoom = async () => {
       try {
+        console.log('🎯 Initializing room...');
         // Start media first
         await startMedia();
         
@@ -48,11 +52,15 @@ const Room = () => {
 
     initRoom();
 
-    // Cleanup on unmount
+    // Cleanup on unmount - just clean up connections, don't navigate
     return () => {
-      leaveRoom();
+      console.log('🧹 Cleaning up room...');
+      webrtcService.cleanup();
+      socketService.leaveRoom(urlRoomId);
+      stopMedia();
     };
-  }, [urlRoomId, userName, startMedia, joinRoom, leaveRoom]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlRoomId, userName]);
 
   const handleToggleScreenShare = () => {
     if (isScreenSharing) {
