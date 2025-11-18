@@ -20,23 +20,6 @@ app.get('/api/hello', (req, res) => {
 });
 
 // Redis test route
-app.get('/api/redis/test', async (req, res) => {
-  try {
-    await redisHelper.set('test_key', { data: 'Hello Redis!' }, 60);
-    const value = await redisHelper.get('test_key');
-    
-    res.json({
-      success: true,
-      message: 'Redis is working!',
-      data: value
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
-  }
-});
 
 
 
