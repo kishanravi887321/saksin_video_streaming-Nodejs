@@ -6,6 +6,7 @@ import './App.css';
 function App() {
   return (
     <Router>
+      
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/room/:roomId" element={<Room />} />
