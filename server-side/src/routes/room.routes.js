@@ -6,6 +6,7 @@ const router = express.Router();
 // Get room info
 router.get('/:roomId', (req, res) => {
   try {
+    console.log("Fetching info for room:", req.params.roomId);
     const { roomId } = req.params;
     const roomInfo = roomManager.getRoomInfo(roomId);
     
