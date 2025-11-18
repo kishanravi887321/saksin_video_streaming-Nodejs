@@ -2,8 +2,8 @@
   position: relative;
   width: 100%;
   height: 100%;
-  background: #000;
-  border-radius: 8px;
+  background: linear-gradient(135deg, #1e1e1e 0%, #0a0a0a 100%);
+  border-radius: 12px;
   overflow: hidden;
 }
 
@@ -11,6 +11,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+.video:hover {
+  opacity: 0.95;
 }
 
 .local-video {
@@ -19,12 +24,17 @@
 
 .video-label {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  background: rgba(0, 0, 0, 0.7);
+  bottom: 16px;
+  left: 16px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
   color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 2;
 }
