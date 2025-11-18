@@ -1,16 +1,24 @@
 import { Redis } from '@upstash/redis';
 
-// Initialize Redis client with Upstash
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
-});
+// Lazy initialization - Redis client will be created when first accessed
+let redis = null;
 
-// Test connection
-const testConnection = async () => {
+const getRedisClient = () => {
+  if (!redis) {
+    redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    });
+  }
+  return redis;
+};
+
+// Connect to Redis
+const connectRedis = async () => {
   try {
-    await redis.set('connection_test', 'connected');
-    const result = await redis.get('connection_test');
+    const client = getRedisClient();
+    await client.set('connection_test', 'connected');
+    const result = await client.get('connection_test');
     console.log('✅ Redis connected successfully:', result);
     return true;
   } catch (error) {
@@ -24,10 +32,11 @@ export const redisHelper = {
   // Set key-value with optional expiry (in seconds)
   set: async (key, value, expiry = null) => {
     try {
+      const client = getRedisClient();
       if (expiry) {
-        await redis.setex(key, expiry, JSON.stringify(value));
+        await client.setex(key, expiry, JSON.stringify(value));
       } else {
-        await redis.set(key, JSON.stringify(value));
+        await client.set(key, JSON.stringify(value));
       }
       return true;
     } catch (error) {
@@ -39,7 +48,8 @@ export const redisHelper = {
   // Get value by key
   get: async (key) => {
     try {
-      const value = await redis.get(key);
+      const client = getRedisClient();
+      const value = await client.get(key);
       return value ? JSON.parse(value) : null;
     } catch (error) {
       console.error('Redis GET error:', error);
@@ -50,7 +60,8 @@ export const redisHelper = {
   // Delete key
   del: async (key) => {
     try {
-      await redis.del(key);
+      const client = getRedisClient();
+      await client.del(key);
       return true;
     } catch (error) {
       console.error('Redis DEL error:', error);
@@ -61,7 +72,8 @@ export const redisHelper = {
   // Check if key exists
   exists: async (key) => {
     try {
-      const exists = await redis.exists(key);
+      const client = getRedisClient();
+      const exists = await client.exists(key);
       return exists === 1;
     } catch (error) {
       console.error('Redis EXISTS error:', error);
@@ -72,7 +84,8 @@ export const redisHelper = {
   // Set expiry on existing key
   expire: async (key, seconds) => {
     try {
-      await redis.expire(key, seconds);
+      const client = getRedisClient();
+      await client.expire(key, seconds);
       return true;
     } catch (error) {
       console.error('Redis EXPIRE error:', error);
@@ -83,7 +96,8 @@ export const redisHelper = {
   // Hash operations
   hset: async (key, field, value) => {
     try {
-      await redis.hset(key, { [field]: JSON.stringify(value) });
+      const client = getRedisClient();
+      await client.hset(key, { [field]: JSON.stringify(value) });
       return true;
     } catch (error) {
       console.error('Redis HSET error:', error);
@@ -93,7 +107,8 @@ export const redisHelper = {
 
   hget: async (key, field) => {
     try {
-      const value = await redis.hget(key, field);
+      const client = getRedisClient();
+      const value = await client.hget(key, field);
       return value ? JSON.parse(value) : null;
     } catch (error) {
       console.error('Redis HGET error:', error);
@@ -103,7 +118,8 @@ export const redisHelper = {
 
   hgetall: async (key) => {
     try {
-      const data = await redis.hgetall(key);
+      const client = getRedisClient();
+      const data = await client.hgetall(key);
       if (!data) return null;
       
       const parsed = {};
@@ -118,5 +134,5 @@ export const redisHelper = {
   },
 };
 
-export { redis, testConnection };
-export default redis;
+export { getRedisClient as redis, connectRedis };
+export default getRedisClient;
