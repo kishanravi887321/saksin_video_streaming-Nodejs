@@ -1,0 +1,91 @@
+.controls {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+}
+
+.control-btn {
+  width: 64px;
+  height: 64px;
+  border: none;
+  border-radius: 50%;
+  font-size: 22px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.control-btn::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.control-btn:hover::before {
+  opacity: 1;
+}
+
+.control-btn.active {
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  color: white;
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.control-btn.inactive {
+  background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
+  color: white;
+  box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+}
+
+.control-btn:not(.active):not(.inactive) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.control-btn.leave-btn {
+  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+  color: white;
+  box-shadow: 0 6px 20px rgba(211, 47, 47, 0.5);
+}
+
+.control-btn:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.control-btn.active:hover {
+  box-shadow: 0 8px 28px rgba(76, 175, 80, 0.5);
+}
+
+.control-btn.inactive:hover {
+  box-shadow: 0 8px 28px rgba(244, 67, 54, 0.5);
+}
+
+.control-btn:not(.active):not(.inactive):hover {
+  box-shadow: 0 8px 28px rgba(102, 126, 234, 0.5);
+}
+
+.control-btn.leave-btn:hover {
+  box-shadow: 0 8px 28px rgba(211, 47, 47, 0.6);
+}
+
+.control-btn:active {
+  transform: translateY(-2px) scale(1);
+}
