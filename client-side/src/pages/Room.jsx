@@ -33,11 +33,15 @@ const Room = () => {
 
   useEffect(() => {
     const initRoom = async () => {
-      // Start media first
-      await startMedia();
-      
-      // Then join room
-      joinRoom(urlRoomId, { userName });
+      try {
+        // Start media first
+        await startMedia();
+        
+        // Then join room
+        joinRoom(urlRoomId, { userName });
+      } catch (error) {
+        console.error('Error initializing room:', error);
+      }
     };
 
     initRoom();
@@ -46,7 +50,7 @@ const Room = () => {
     return () => {
       leaveRoom();
     };
-  }, [urlRoomId]);
+  }, [urlRoomId, userName, startMedia, joinRoom, leaveRoom]);
 
   const handleToggleScreenShare = () => {
     if (isScreenSharing) {

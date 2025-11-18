@@ -34,9 +34,16 @@ export const useRoom = () => {
 
   // Leave room
   const leaveRoom = useCallback(() => {
-    if (roomId) {
-      socketService.leaveRoom(roomId);
+    try {
+      if (roomId) {
+        socketService.leaveRoom(roomId);
+      }
       webrtcService.cleanup();
+      reset();
+      navigate('/');
+    } catch (error) {
+      console.error('Error leaving room:', error);
+      // Still reset and navigate even if there's an error
       reset();
       navigate('/');
     }

@@ -85,18 +85,45 @@ export const useMedia = () => {
         console.log('📤 Processing peer:', socketId);
         console.log('📤 Connection state:', pc.connectionState);
         
+        // Only proceed if connection is established or connecting
+        if (pc.connectionState === 'failed' || pc.connectionState === 'closed') {
+          console.log('⚠️ Skipping peer with failed/closed connection:', socketId);
+          continue;
+        }
+        
+        // Wait for connection to be established if it's still connecting
+        if (pc.connectionState === 'new' || pc.connectionState === 'connecting') {
+          console.log('⏳ Waiting for connection to establish:', socketId);
+          await new Promise((resolve) => {
+            const checkConnection = () => {
+              if (pc.connectionState === 'connected') {
+                resolve();
+              } else if (pc.connectionState === 'failed' || pc.connectionState === 'closed') {
+                console.log('❌ Connection failed while waiting:', socketId);
+                resolve();
+              } else {
+                setTimeout(checkConnection, 100);
+              }
+            };
+            checkConnection();
+          });
+        }
+        
+        // Check again after waiting
+        if (pc.connectionState !== 'connected') {
+          console.log('⚠️ Connection not ready, skipping:', socketId);
+          continue;
+        }
+        
         // Add screen tracks to existing peer connections  
         const screenTrack = stream.getVideoTracks()[0];
         if (screenTrack) {
           try {
-            // Check if we already have a video sender
-            const senders = pc.getSenders();
-            console.log('📤 Existing senders:', senders.length);
-            
             const sender = pc.addTrack(screenTrack, stream);
             console.log('✅ Added screen track, sender:', sender.track?.id);
           } catch (error) {
             console.error('❌ Error adding track:', error);
+            continue;
           }
         }
         
@@ -106,7 +133,6 @@ export const useMedia = () => {
           const offer = await webrtcService.createOffer(socketId);
           if (offer) {
             console.log('📤 Sending renegotiation offer to:', socketId);
-            console.log('📤 Offer SDP length:', offer.sdp?.length);
             socketService.sendOffer(roomId, socketId, offer);
           }
         } catch (error) {
