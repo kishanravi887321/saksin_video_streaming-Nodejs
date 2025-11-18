@@ -41,6 +41,11 @@ class WebRTCService {
       
       if (peerConnection.connectionState === 'failed') {
         console.error('Connection failed with:', socketId);
+        // Try to restart ICE before closing
+        console.log('Attempting ICE restart for:', socketId);
+        peerConnection.restartIce();
+      } else if (peerConnection.connectionState === 'closed') {
+        console.log('Connection closed with:', socketId);
         this.closePeerConnection(socketId);
       }
     };
@@ -126,17 +131,31 @@ class WebRTCService {
 
   // Close specific peer connection
   closePeerConnection(socketId) {
-    const peerConnection = this.peerConnections.get(socketId);
-    if (peerConnection) {
-      peerConnection.close();
-      this.peerConnections.delete(socketId);
+    try {
+      const peerConnection = this.peerConnections.get(socketId);
+      if (peerConnection) {
+        peerConnection.close();
+        this.peerConnections.delete(socketId);
+      }
+    } catch (error) {
+      console.error('Error closing peer connection:', socketId, error);
     }
   }
 
   // Close all peer connections
   closeAllConnections() {
-    this.peerConnections.forEach((pc) => pc.close());
-    this.peerConnections.clear();
+    try {
+      this.peerConnections.forEach((pc, socketId) => {
+        try {
+          pc.close();
+        } catch (error) {
+          console.error('Error closing peer connection:', socketId, error);
+        }
+      });
+      this.peerConnections.clear();
+    } catch (error) {
+      console.error('Error closing all connections:', error);
+    }
   }
 
   // Set local stream
@@ -161,25 +180,49 @@ class WebRTCService {
 
   // Stop local stream
   stopLocalStream() {
-    if (this.localStream) {
-      this.localStream.getTracks().forEach((track) => track.stop());
-      this.localStream = null;
+    try {
+      if (this.localStream) {
+        this.localStream.getTracks().forEach((track) => {
+          try {
+            track.stop();
+          } catch (error) {
+            console.error('Error stopping track:', error);
+          }
+        });
+        this.localStream = null;
+      }
+    } catch (error) {
+      console.error('Error stopping local stream:', error);
     }
   }
 
   // Stop screen stream
   stopScreenStream() {
-    if (this.screenStream) {
-      this.screenStream.getTracks().forEach((track) => track.stop());
-      this.screenStream = null;
+    try {
+      if (this.screenStream) {
+        this.screenStream.getTracks().forEach((track) => {
+          try {
+            track.stop();
+          } catch (error) {
+            console.error('Error stopping screen track:', error);
+          }
+        });
+        this.screenStream = null;
+      }
+    } catch (error) {
+      console.error('Error stopping screen stream:', error);
     }
   }
 
   // Cleanup
   cleanup() {
-    this.closeAllConnections();
-    this.stopLocalStream();
-    this.stopScreenStream();
+    try {
+      this.closeAllConnections();
+      this.stopLocalStream();
+      this.stopScreenStream();
+    } catch (error) {
+      console.error('Error during WebRTC cleanup:', error);
+    }
   }
 }
 

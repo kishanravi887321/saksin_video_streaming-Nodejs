@@ -37,8 +37,14 @@ class SocketService {
   }
 
   disconnect() {
-    if (this.socket) {
-      this.socket.disconnect();
+    try {
+      if (this.socket) {
+        this.socket.disconnect();
+        this.socket = null;
+        this.connected = false;
+      }
+    } catch (error) {
+      console.error('Error disconnecting socket:', error);
       this.socket = null;
       this.connected = false;
     }
