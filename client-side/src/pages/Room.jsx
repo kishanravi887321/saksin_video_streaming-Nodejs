@@ -12,6 +12,8 @@ const Room = () => {
   const location = useLocation();
   const userName = location.state?.userName || 'Anonymous';
 
+  console.log('🎬 Room component rendered:', { urlRoomId, userName });
+
   const { joinRoom, leaveRoom } = useRoom();
   const {
     startMedia,

@@ -9,8 +9,12 @@ const Home = () => {
 
   const handleJoinRoom = (e) => {
     e.preventDefault();
+    console.log('🚀 Join button clicked:', { roomId, userName });
     if (roomId.trim() && userName.trim()) {
+      console.log('✅ Navigating to room:', `/room/${roomId}`);
       navigate(`/room/${roomId}`, { state: { userName } });
+    } else {
+      console.log('❌ Missing roomId or userName');
     }
   };
 
