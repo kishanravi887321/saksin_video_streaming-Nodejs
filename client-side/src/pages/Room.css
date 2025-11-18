@@ -1,0 +1,119 @@
+.room {
+  min-height: 100vh;
+  background: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+.room-header {
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.room-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.participant-count {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.video-grid {
+  flex: 1;
+  display: grid;
+  gap: 15px;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Grid layouts based on number of videos */
+.video-grid:has(.video-wrapper:nth-child(1):last-child) {
+  grid-template-columns: 1fr;
+}
+
+.video-grid:has(.video-wrapper:nth-child(2):last-child) {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.video-grid:has(.video-wrapper:nth-child(3):last-child),
+.video-grid:has(.video-wrapper:nth-child(4):last-child) {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.video-grid:has(.video-wrapper:nth-child(5):last-child),
+.video-grid:has(.video-wrapper:nth-child(6):last-child) {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.video-wrapper {
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  min-height: 200px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.video-wrapper.screen-share {
+  grid-column: span 2;
+  min-height: 400px;
+}
+
+.controls-container {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .room-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .video-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .video-wrapper {
+    min-height: 250px;
+  }
+
+  .video-wrapper.screen-share {
+    grid-column: span 1;
+    min-height: 300px;
+  }
+
+  .controls-container {
+    padding: 15px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .room-title {
+    font-size: 18px;
+  }
+
+  .participant-count {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
