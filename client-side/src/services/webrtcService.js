@@ -19,8 +19,11 @@ class WebRTCService {
 
     // Handle incoming tracks
     peerConnection.ontrack = (event) => {
-      console.log('📥 Received track from:', socketId);
+      console.log('📥 Received track from:', socketId, 'Track kind:', event.track.kind);
+      console.log('📥 Stream ID:', event.streams[0]?.id);
       if (onTrackCallback) {
+        // Pass the stream to the callback
+        // The stream will contain all tracks (video, audio, screen)
         onTrackCallback(socketId, event.streams[0]);
       }
     };

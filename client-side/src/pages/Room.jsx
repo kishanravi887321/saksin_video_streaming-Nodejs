@@ -72,9 +72,9 @@ const Room = () => {
       </div>
 
       <div className="video-grid">
-        {/* Local video */}
+        {/* Local video - show as small when screen sharing */}
         {localStream && (
-          <div className="video-wrapper">
+          <div className={`video-wrapper ${isScreenSharing ? 'small-video' : ''}`}>
             <VideoPlayer
               stream={localStream}
               muted={true}
@@ -84,27 +84,23 @@ const Room = () => {
           </div>
         )}
 
-        {/* Local screen share */}
-        {screenStream && (
-          <div className="video-wrapper screen-share">
-            <VideoPlayer
-              stream={screenStream}
-              muted={true}
-              userName={`${userName}'s Screen`}
-              isLocal={true}
-            />
-          </div>
-        )}
+        {/* Don't show your own screen share to yourself */}
+        {/* Screen share is only visible to other users */}
 
         {/* Remote videos */}
         {Array.from(remoteStreams.entries()).map(([socketId, stream]) => {
           const user = users.find((u) => u.socketId === socketId);
+          const isScreenShare = user?.hasScreen;
+          
           return (
-            <div key={socketId} className="video-wrapper">
+            <div 
+              key={socketId} 
+              className={`video-wrapper ${isScreenShare ? 'screen-share' : ''}`}
+            >
               <VideoPlayer
                 stream={stream}
                 muted={false}
-                userName={user?.userName || 'User'}
+                userName={isScreenShare ? `${user?.userName || 'User'}'s Screen` : (user?.userName || 'User')}
                 isLocal={false}
               />
             </div>
