@@ -90,12 +90,17 @@ export const useRoom = () => {
     // Received offer
     const handleOffer = async ({ offer, fromSocketId }) => {
       console.log('Received offer from:', fromSocketId);
-      const pc = webrtcService.createPeerConnection(
-        fromSocketId,
-        handleRemoteTrack,
-        handleIceCandidate
-      );
-      webrtcService.addLocalTracks(fromSocketId);
+      
+      // Get or create peer connection
+      let pc = webrtcService.peerConnections.get(fromSocketId);
+      if (!pc) {
+        pc = webrtcService.createPeerConnection(
+          fromSocketId,
+          handleRemoteTrack,
+          handleIceCandidate
+        );
+        webrtcService.addLocalTracks(fromSocketId);
+      }
 
       const answer = await webrtcService.createAnswer(fromSocketId, offer);
       if (answer) {
@@ -125,18 +130,26 @@ export const useRoom = () => {
     };
 
     // User started screen share
-    const handleUserScreenShareStarted = ({ socketId, userName }) => {
+    const handleUserScreenShareStarted = async ({ socketId, userName }) => {
+      console.log('🖥️ User started screen share:', socketId, userName);
       updateUser(socketId, { hasScreen: true });
+      
+      // The screen tracks will come through renegotiation
+      // Just wait for the new offer with screen tracks
+      console.log('🖥️ Waiting for screen share tracks from:', socketId);
     };
 
     // User stopped screen share
     const handleUserScreenShareStopped = ({ socketId }) => {
+      console.log('User stopped screen share:', socketId);
       updateUser(socketId, { hasScreen: false });
     };
 
     // Remote track handler
     const handleRemoteTrack = (socketId, stream) => {
-      console.log('Remote track received from:', socketId);
+      console.log('🎬 Remote track received from:', socketId);
+      console.log('🎬 Stream ID:', stream.id);
+      console.log('🎬 Stream tracks:', stream.getTracks().map(t => `${t.kind}: ${t.id}`));
       addRemoteStream(socketId, stream);
     };
 
