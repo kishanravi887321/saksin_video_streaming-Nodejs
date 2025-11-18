@@ -1,4 +1,5 @@
 .env
 /node_modules
+/server-side/node_modules
 /dist
 /build
