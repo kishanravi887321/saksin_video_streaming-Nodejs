@@ -115,28 +115,33 @@ export const useMedia = () => {
           continue;
         }
         
-        // Add screen tracks to existing peer connections  
+        // Replace camera video track with screen track (avoids renegotiation issues)
         const screenTrack = stream.getVideoTracks()[0];
         if (screenTrack) {
           try {
-            const sender = pc.addTrack(screenTrack, stream);
-            console.log('✅ Added screen track, sender:', sender.track?.id);
+            // Find the video sender
+            const senders = pc.getSenders();
+            const videoSender = senders.find(sender => sender.track && sender.track.kind === 'video');
+            
+            if (videoSender) {
+              console.log('🔄 Replacing camera track with screen track');
+              await videoSender.replaceTrack(screenTrack);
+              console.log('✅ Screen track replaced successfully');
+            } else {
+              console.log('➕ No existing video track, adding screen track');
+              pc.addTrack(screenTrack, stream);
+              
+              // Only renegotiate if we added a new track
+              const offer = await webrtcService.createOffer(socketId);
+              if (offer) {
+                console.log('📤 Sending renegotiation offer to:', socketId);
+                socketService.sendOffer(roomId, socketId, offer);
+              }
+            }
           } catch (error) {
-            console.error('❌ Error adding track:', error);
+            console.error('❌ Error handling screen track:', error);
             continue;
           }
-        }
-        
-        // Renegotiate connection
-        try {
-          console.log('📤 Creating offer for:', socketId);
-          const offer = await webrtcService.createOffer(socketId);
-          if (offer) {
-            console.log('📤 Sending renegotiation offer to:', socketId);
-            socketService.sendOffer(roomId, socketId, offer);
-          }
-        } catch (error) {
-          console.error('❌ Error renegotiating with peer:', socketId, error);
         }
       }
       
