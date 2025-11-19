@@ -100,13 +100,36 @@ export const useRoom = () => {
       
       // Get or create peer connection
       let pc = webrtcService.peerConnections.get(fromSocketId);
+      const isNewConnection = !pc;
+      
       if (!pc) {
+        console.log('Creating new peer connection for:', fromSocketId);
         pc = webrtcService.createPeerConnection(
           fromSocketId,
           handleRemoteTrack,
           handleIceCandidate
         );
+        // Add both local tracks (camera/mic) and screen tracks if available
         webrtcService.addLocalTracks(fromSocketId);
+        webrtcService.addScreenTracks(fromSocketId);
+      } else {
+        console.log('Renegotiating with existing peer:', fromSocketId);
+        // For renegotiation, check if we need to add screen tracks
+        const localStream = webrtcService.getLocalStream();
+        const screenStream = webrtcService.getScreenStream();
+        
+        if (screenStream) {
+          console.log('Adding screen tracks during renegotiation');
+          // Check if screen tracks are already added
+          const senders = pc.getSenders();
+          const hasScreenTrack = senders.some(sender => 
+            sender.track && screenStream.getTracks().some(track => track.id === sender.track.id)
+          );
+          
+          if (!hasScreenTrack) {
+            webrtcService.addScreenTracks(fromSocketId);
+          }
+        }
       }
 
       const answer = await webrtcService.createAnswer(fromSocketId, offer);
