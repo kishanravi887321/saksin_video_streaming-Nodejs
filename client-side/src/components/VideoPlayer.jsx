@@ -6,9 +6,20 @@ const VideoPlayer = ({ stream, muted = false, userName = '', isLocal = false }) 
 
   useEffect(() => {
     if (videoRef.current && stream) {
+      console.log('🎬 Setting stream to video element:', {
+        streamId: stream.id,
+        tracks: stream.getTracks().map(t => `${t.kind}: ${t.enabled ? 'enabled' : 'disabled'}`),
+        userName
+      });
+      
       videoRef.current.srcObject = stream;
+      
+      // Force play
+      videoRef.current.play().catch(err => {
+        console.error('Error playing video:', err);
+      });
     }
-  }, [stream]);
+  }, [stream, userName]);
 
   return (
     <div className="video-player">
