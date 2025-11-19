@@ -15,7 +15,8 @@ class WebRTCService {
 
     const peerConnection = new RTCPeerConnection({
       iceServers: ICE_SERVERS,
-      bundlePolicy: 'max-bundle',
+      // Don't use max-bundle - causes BUNDLE group error during renegotiation
+      bundlePolicy: 'balanced',
       rtcpMuxPolicy: 'require',
     });
 

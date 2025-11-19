@@ -115,33 +115,39 @@ export const useMedia = () => {
           continue;
         }
         
-        // Replace camera video track with screen track (avoids renegotiation issues)
+        // Add screen tracks to existing peer connections  
         const screenTrack = stream.getVideoTracks()[0];
+        const audioTrack = stream.getAudioTracks()[0];
+        
         if (screenTrack) {
           try {
-            // Find the video sender
-            const senders = pc.getSenders();
-            const videoSender = senders.find(sender => sender.track && sender.track.kind === 'video');
-            
-            if (videoSender) {
-              console.log('🔄 Replacing camera track with screen track');
-              await videoSender.replaceTrack(screenTrack);
-              console.log('✅ Screen track replaced successfully');
-            } else {
-              console.log('➕ No existing video track, adding screen track');
-              pc.addTrack(screenTrack, stream);
-              
-              // Only renegotiate if we added a new track
-              const offer = await webrtcService.createOffer(socketId);
-              if (offer) {
-                console.log('📤 Sending renegotiation offer to:', socketId);
-                socketService.sendOffer(roomId, socketId, offer);
-              }
-            }
+            pc.addTrack(screenTrack, stream);
+            console.log('✅ Added screen video track');
           } catch (error) {
-            console.error('❌ Error handling screen track:', error);
+            console.error('❌ Error adding screen video track:', error);
             continue;
           }
+        }
+        
+        if (audioTrack) {
+          try {
+            pc.addTrack(audioTrack, stream);
+            console.log('✅ Added screen audio track');
+          } catch (error) {
+            console.error('❌ Error adding screen audio track:', error);
+          }
+        }
+        
+        // Renegotiate connection
+        try {
+          console.log('📤 Creating offer for:', socketId);
+          const offer = await webrtcService.createOffer(socketId);
+          if (offer) {
+            console.log('📤 Sending renegotiation offer to:', socketId);
+            socketService.sendOffer(roomId, socketId, offer);
+          }
+        } catch (error) {
+          console.error('❌ Error renegotiating with peer:', socketId, error);
         }
       }
       
