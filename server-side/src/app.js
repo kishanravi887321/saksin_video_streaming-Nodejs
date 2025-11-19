@@ -15,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.get('/api/hello', (req, res) => {
+  consoloe.log('Hello endpoint was hit');
   res.json({
     message: 'Hello from the API!',
     timestamp: new Date().toISOString()
