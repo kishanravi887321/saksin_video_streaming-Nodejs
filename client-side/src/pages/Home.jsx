@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ThemeToggle from '../components/ThemeToggle';
 import './Home.css';
 
 const Home = () => {
@@ -25,6 +26,7 @@ const Home = () => {
 
   return (
     <div className="home">
+      <ThemeToggle />
       <div className="home-left">
         <div className="hero-content">
           <div className="logo-badge">

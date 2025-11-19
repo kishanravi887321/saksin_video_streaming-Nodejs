@@ -5,6 +5,7 @@ import { useMedia } from '../hooks/useMedia';
 import { useRoomStore } from '../store/roomStore';
 import VideoPlayer from '../components/VideoPlayer';
 import Controls from '../components/Controls';
+import ThemeToggle from '../components/ThemeToggle';
 import webrtcService from '../services/webrtcService';
 import socketService from '../services/socketService';
 import './Room.css';
@@ -80,8 +81,11 @@ const Room = () => {
     <div className="room">
       <div className="room-header">
         <h2 className="room-title">Room: {urlRoomId}</h2>
-        <div className="participant-count">
-          {users.length + 1} Participant{users.length !== 0 ? 's' : ''}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="participant-count">
+            {users.length + 1} Participant{users.length !== 0 ? 's' : ''}
+          </div>
+          <ThemeToggle />
         </div>
       </div>
 

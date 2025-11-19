@@ -10,11 +10,14 @@ app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true,
 }));
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.get('/api/hello', (req, res) => {
+  consoloe.log('Hello endpoint was hit');
   res.json({
     message: 'Hello from the API!',
     timestamp: new Date().toISOString()
