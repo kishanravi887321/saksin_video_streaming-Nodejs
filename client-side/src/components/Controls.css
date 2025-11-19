@@ -19,7 +19,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-md);
 }
 
 .control-btn::before {
@@ -28,7 +28,7 @@
   inset: -2px;
   border-radius: 50%;
   padding: 2px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.2), rgba(var(--accent-rgb), 0.05));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -54,9 +54,9 @@
 }
 
 .control-btn:not(.active):not(.inactive) {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: var(--button-bg);
+  color: var(--button-text);
+  box-shadow: 0 6px 20px rgba(var(--accent-rgb), 0.3);
 }
 
 .control-btn.leave-btn {
@@ -67,7 +67,7 @@
 
 .control-btn:hover {
   transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-lg);
 }
 
 .control-btn.active:hover {
@@ -79,7 +79,7 @@
 }
 
 .control-btn:not(.active):not(.inactive):hover {
-  box-shadow: 0 8px 28px rgba(102, 126, 234, 0.5);
+  box-shadow: 0 8px 28px rgba(var(--accent-rgb), 0.4);
 }
 
 .control-btn.leave-btn:hover {
