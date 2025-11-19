@@ -101,12 +101,15 @@ export const useRoom = () => {
       // Get or create peer connection
       let pc = webrtcService.peerConnections.get(fromSocketId);
       if (!pc) {
+        console.log('Creating new peer connection for:', fromSocketId);
         pc = webrtcService.createPeerConnection(
           fromSocketId,
           handleRemoteTrack,
           handleIceCandidate
         );
+        // Add both local tracks (camera/mic) and screen tracks if available
         webrtcService.addLocalTracks(fromSocketId);
+        webrtcService.addScreenTracks(fromSocketId);
       }
 
       const answer = await webrtcService.createAnswer(fromSocketId, offer);
