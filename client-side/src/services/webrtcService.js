@@ -15,6 +15,10 @@ class WebRTCService {
 
     const peerConnection = new RTCPeerConnection({
       iceServers: ICE_SERVERS,
+      // Optimize for video quality and bandwidth
+      sdpSemantics: 'unified-plan',
+      bundlePolicy: 'max-bundle',
+      rtcpMuxPolicy: 'require',
     });
 
     // Handle incoming tracks

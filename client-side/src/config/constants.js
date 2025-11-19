@@ -23,13 +23,20 @@ export const MEDIA_CONSTRAINTS = {
   },
 };
 
-// Screen Share Constraints
+// Screen Share Constraints - Optimized for video playback
 export const SCREEN_CONSTRAINTS = {
   video: {
     cursor: 'always',
     displaySurface: 'monitor',
+    width: { ideal: 1920, max: 1920 },
+    height: { ideal: 1080, max: 1080 },
+    frameRate: { ideal: 30, max: 60 }, // Higher frame rate for smooth video
   },
-  audio: false,
+  audio: {
+    echoCancellation: false,
+    noiseSuppression: false,
+    autoGainControl: false,
+  }, // Enable audio sharing for YouTube sound
 };
 
 // Room Settings
