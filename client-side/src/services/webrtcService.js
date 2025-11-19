@@ -15,9 +15,6 @@ class WebRTCService {
 
     const peerConnection = new RTCPeerConnection({
       iceServers: ICE_SERVERS,
-      // Optimize for video quality and bandwidth
-      bundlePolicy: 'max-bundle',
-      rtcpMuxPolicy: 'require',
     });
 
     // Handle incoming tracks
@@ -83,7 +80,10 @@ class WebRTCService {
     if (!peerConnection) return null;
 
     try {
-      const offer = await peerConnection.createOffer();
+      const offer = await peerConnection.createOffer({
+        offerToReceiveAudio: true,
+        offerToReceiveVideo: true,
+      });
       await peerConnection.setLocalDescription(offer);
       return offer;
     } catch (error) {
