@@ -67,7 +67,9 @@ export const useRoom = () => {
           handleRemoteTrack,
           handleIceCandidate
         );
+        // Add both local tracks (camera/mic) and screen tracks if available
         webrtcService.addLocalTracks(user.socketId);
+        webrtcService.addScreenTracks(user.socketId);
 
         // Create and send offer
         webrtcService.createOffer(user.socketId).then((offer) => {
