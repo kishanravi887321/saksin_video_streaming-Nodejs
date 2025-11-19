@@ -1,0 +1,108 @@
+/* ========================================
+   THEME SYSTEM - Light & Dark Mode
+   ======================================== */
+
+/* Light Mode (Default) */
+:root {
+  /* Primary Colors */
+  --primary-bg: #ffffff;
+  --secondary-bg: #f8f9fa;
+  --tertiary-bg: #f0f2f5;
+  
+  /* Blue Accent Colors */
+  --accent-primary: #2563eb;
+  --accent-secondary: #3b82f6;
+  --accent-hover: #1d4ed8;
+  --accent-light: #dbeafe;
+  --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  
+  /* Text Colors */
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --text-inverse: #ffffff;
+  
+  /* Border & Divider */
+  --border-color: #e5e7eb;
+  --divider-color: #d1d5db;
+  
+  /* Card & Surface */
+  --card-bg: #ffffff;
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --card-shadow-hover: 0 10px 25px rgba(37, 99, 235, 0.15);
+  
+  /* Input & Form */
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --input-focus: #3b82f6;
+  
+  /* Status Colors */
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(37, 99, 235, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(37, 99, 235, 0.1);
+  
+  /* Overlay */
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  --overlay-light: rgba(37, 99, 235, 0.05);
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+  /* Primary Colors */
+  --primary-bg: #0a0a0f;
+  --secondary-bg: #1a1a24;
+  --tertiary-bg: #252530;
+  
+  /* Blue Accent Colors */
+  --accent-primary: #3b82f6;
+  --accent-secondary: #60a5fa;
+  --accent-hover: #2563eb;
+  --accent-light: #1e3a8a;
+  --accent-gradient: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  
+  /* Text Colors */
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --text-inverse: #1f2937;
+  
+  /* Border & Divider */
+  --border-color: #374151;
+  --divider-color: #4b5563;
+  
+  /* Card & Surface */
+  --card-bg: #1a1a24;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 10px 25px rgba(59, 130, 246, 0.3);
+  
+  /* Input & Form */
+  --input-bg: #252530;
+  --input-border: #374151;
+  --input-focus: #60a5fa;
+  
+  /* Status Colors */
+  --success: #34d399;
+  --error: #f87171;
+  --warning: #fbbf24;
+  --info: #60a5fa;
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(26, 26, 36, 0.8);
+  --glass-border: rgba(59, 130, 246, 0.2);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  
+  /* Overlay */
+  --overlay-bg: rgba(0, 0, 0, 0.7);
+  --overlay-light: rgba(59, 130, 246, 0.1);
+}
+
+/* Smooth theme transition */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
