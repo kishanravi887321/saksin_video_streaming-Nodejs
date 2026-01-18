@@ -67,26 +67,29 @@ export const useRoom = () => {
           handleRemoteTrack,
           handleIceCandidate
         );
-        // Only add screen tracks if available (no camera/mic tracks)
-        webrtcService.addScreenTracks(user.socketId);
-
-        // Create and send offer only if we have screen tracks to share
+        
+        // Add screen tracks if available
         const screenStream = webrtcService.getScreenStream();
         if (screenStream) {
-          webrtcService.createOffer(user.socketId).then((offer) => {
-            if (offer) {
-              socketService.sendOffer(roomId, user.socketId, offer);
-            }
-          });
+          webrtcService.addScreenTracks(user.socketId);
         }
+
+        // Always create and send offer to establish connection
+        // (even without initial tracks, for future screen sharing)
+        webrtcService.createOffer(user.socketId).then((offer) => {
+          if (offer) {
+            socketService.sendOffer(roomId, user.socketId, offer);
+          }
+        });
       });
     };
 
-    // New user joined
+    // New user joined - they will send us an offer
     const handleUserJoined = ({ user, users }) => {
       console.log('User joined:', user);
       addUser(user);
       setUsers(users);
+      // Note: The new user will send us an offer, we'll handle it in handleOffer
     };
 
     // User left
@@ -104,7 +107,6 @@ export const useRoom = () => {
       
       // Get or create peer connection
       let pc = webrtcService.peerConnections.get(fromSocketId);
-      const isNewConnection = !pc;
       
       if (!pc) {
         console.log('Creating new peer connection for:', fromSocketId);
@@ -113,26 +115,17 @@ export const useRoom = () => {
           handleRemoteTrack,
           handleIceCandidate
         );
-        // Only add screen tracks if available (screen share only mode)
-        webrtcService.addScreenTracks(fromSocketId);
+        
+        // Add screen tracks if we're currently sharing
+        const screenStream = webrtcService.getScreenStream();
+        if (screenStream) {
+          console.log('Adding our screen tracks to new connection');
+          webrtcService.addScreenTracks(fromSocketId);
+        }
       } else {
         console.log('Renegotiating with existing peer:', fromSocketId);
-        // For renegotiation, check if we need to add screen tracks
-        const localStream = webrtcService.getLocalStream();
-        const screenStream = webrtcService.getScreenStream();
-        
-        if (screenStream) {
-          console.log('Adding screen tracks during renegotiation');
-          // Check if screen tracks are already added
-          const senders = pc.getSenders();
-          const hasScreenTrack = senders.some(sender => 
-            sender.track && screenStream.getTracks().some(track => track.id === sender.track.id)
-          );
-          
-          if (!hasScreenTrack) {
-            webrtcService.addScreenTracks(fromSocketId);
-          }
-        }
+        // For renegotiation, the remote peer is adding/removing tracks
+        // We don't need to add our tracks again here
       }
 
       const answer = await webrtcService.createAnswer(fromSocketId, offer);
