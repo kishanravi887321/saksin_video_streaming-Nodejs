@@ -1,8 +1,9 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import './VideoPlayer.css';
 
 const VideoPlayer = ({ stream, muted = false, userName = '', isLocal = false }) => {
   const videoRef = useRef(null);
+  const [needsInteraction, setNeedsInteraction] = useState(false);
 
   useEffect(() => {
     const videoElement = videoRef.current;
@@ -24,13 +25,23 @@ const VideoPlayer = ({ stream, muted = false, userName = '', isLocal = false }) 
           duration: videoElement.duration
         });
         
-        videoElement.play().catch(err => {
-          console.error('Error playing video:', err);
-          // Add click handler as fallback
-          videoElement.onclick = () => {
-            videoElement.play();
-          };
-        });
+        // Try to play
+        const playPromise = videoElement.play();
+        
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              console.log('✅ Video playing successfully');
+              setNeedsInteraction(false);
+            })
+            .catch(err => {
+              console.error('❌ Autoplay blocked:', err.name);
+              if (err.name === 'NotAllowedError') {
+                console.log('👆 User interaction needed to play video');
+                setNeedsInteraction(true);
+              }
+            });
+        }
       };
       
       videoElement.addEventListener('loadedmetadata', handleLoadedMetadata);
@@ -41,6 +52,18 @@ const VideoPlayer = ({ stream, muted = false, userName = '', isLocal = false }) 
     }
   }, [stream, userName]);
 
+  const handleVideoClick = () => {
+    const videoElement = videoRef.current;
+    if (videoElement) {
+      videoElement.play()
+        .then(() => {
+          console.log('✅ Video playing after user interaction');
+          setNeedsInteraction(false);
+        })
+        .catch(err => console.error('Error playing video:', err));
+    }
+  };
+
   return (
     <div className="video-player">
       <video
@@ -49,7 +72,16 @@ const VideoPlayer = ({ stream, muted = false, userName = '', isLocal = false }) 
         playsInline
         muted={muted}
         className={`video ${isLocal ? 'local-video' : 'remote-video'}`}
+        onClick={handleVideoClick}
       />
+      {needsInteraction && !isLocal && (
+        <div className="play-overlay" onClick={handleVideoClick}>
+          <div className="play-button">
+            <span className="play-icon">▶</span>
+            <span className="play-text">Click to play</span>
+          </div>
+        </div>
+      )}
       {userName && (
         <div className="video-label">
           {userName} {isLocal && '(You)'}

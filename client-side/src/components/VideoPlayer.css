@@ -12,6 +12,7 @@
   height: 100%;
   object-fit: cover;
   transition: opacity 0.3s ease;
+  cursor: pointer;
 }
 
 .video:hover {
@@ -20,6 +21,61 @@
 
 .local-video {
   transform: scaleX(-1);
+}
+
+.play-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.play-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px;
+  background: var(--surface-elevated);
+  border-radius: 16px;
+  border: 2px solid var(--accent-primary);
+  transition: all 0.3s ease;
+}
+
+.play-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 40px rgba(var(--accent-rgb), 0.3);
+}
+
+.play-icon {
+  font-size: 48px;
+  color: var(--accent-primary);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.play-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
 }
 
 .video-label {
