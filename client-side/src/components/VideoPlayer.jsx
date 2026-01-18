@@ -5,19 +5,39 @@ const VideoPlayer = ({ stream, muted = false, userName = '', isLocal = false }) 
   const videoRef = useRef(null);
 
   useEffect(() => {
-    if (videoRef.current && stream) {
+    const videoElement = videoRef.current;
+    
+    if (videoElement && stream) {
       console.log('🎬 Setting stream to video element:', {
         streamId: stream.id,
-        tracks: stream.getTracks().map(t => `${t.kind}: ${t.enabled ? 'enabled' : 'disabled'}`),
+        tracks: stream.getTracks().map(t => `${t.kind}: ${t.enabled ? 'enabled' : 'disabled'}, readyState: ${t.readyState}`),
         userName
       });
       
-      videoRef.current.srcObject = stream;
+      videoElement.srcObject = stream;
       
-      // Force play
-      videoRef.current.play().catch(err => {
-        console.error('Error playing video:', err);
-      });
+      // Wait for metadata to load
+      const handleLoadedMetadata = () => {
+        console.log('📹 Video metadata loaded:', {
+          width: videoElement.videoWidth,
+          height: videoElement.videoHeight,
+          duration: videoElement.duration
+        });
+        
+        videoElement.play().catch(err => {
+          console.error('Error playing video:', err);
+          // Add click handler as fallback
+          videoElement.onclick = () => {
+            videoElement.play();
+          };
+        });
+      };
+      
+      videoElement.addEventListener('loadedmetadata', handleLoadedMetadata);
+      
+      return () => {
+        videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      };
     }
   }, [stream, userName]);
 

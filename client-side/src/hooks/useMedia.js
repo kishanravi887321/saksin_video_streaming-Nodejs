@@ -117,13 +117,24 @@ export const useMedia = () => {
         
         // Add screen tracks to existing peer connections  
         const screenTrack = stream.getVideoTracks()[0];
+        const audioTrack = stream.getAudioTracks()[0];
+        
         if (screenTrack) {
           try {
-            const sender = pc.addTrack(screenTrack, stream);
-            console.log('✅ Added screen track, sender:', sender.track?.id);
+            pc.addTrack(screenTrack, stream);
+            console.log('✅ Added screen video track');
           } catch (error) {
-            console.error('❌ Error adding track:', error);
+            console.error('❌ Error adding screen video track:', error);
             continue;
+          }
+        }
+        
+        if (audioTrack) {
+          try {
+            pc.addTrack(audioTrack, stream);
+            console.log('✅ Added screen audio track');
+          } catch (error) {
+            console.error('❌ Error adding screen audio track:', error);
           }
         }
         
