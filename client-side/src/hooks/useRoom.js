@@ -60,23 +60,25 @@ export const useRoom = () => {
       setUsers(users);
       setSocketId(socketId);
 
-      // Create peer connections for existing users
+      // Create peer connections for existing users (screen share only mode)
       users.forEach((user) => {
         const pc = webrtcService.createPeerConnection(
           user.socketId,
           handleRemoteTrack,
           handleIceCandidate
         );
-        // Add both local tracks (camera/mic) and screen tracks if available
-        webrtcService.addLocalTracks(user.socketId);
+        // Only add screen tracks if available (no camera/mic tracks)
         webrtcService.addScreenTracks(user.socketId);
 
-        // Create and send offer
-        webrtcService.createOffer(user.socketId).then((offer) => {
-          if (offer) {
-            socketService.sendOffer(roomId, user.socketId, offer);
-          }
-        });
+        // Create and send offer only if we have screen tracks to share
+        const screenStream = webrtcService.getScreenStream();
+        if (screenStream) {
+          webrtcService.createOffer(user.socketId).then((offer) => {
+            if (offer) {
+              socketService.sendOffer(roomId, user.socketId, offer);
+            }
+          });
+        }
       });
     };
 
@@ -111,8 +113,7 @@ export const useRoom = () => {
           handleRemoteTrack,
           handleIceCandidate
         );
-        // Add both local tracks (camera/mic) and screen tracks if available
-        webrtcService.addLocalTracks(fromSocketId);
+        // Only add screen tracks if available (screen share only mode)
         webrtcService.addScreenTracks(fromSocketId);
       } else {
         console.log('Renegotiating with existing peer:', fromSocketId);

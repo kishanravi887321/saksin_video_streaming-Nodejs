@@ -30,43 +30,43 @@ const Home = () => {
       <div className="home-left">
         <div className="hero-content">
           <div className="logo-badge">
-            <span className="logo-icon">🎥</span>
+            <span className="logo-icon">🖥️</span>
           </div>
           <h1 className="hero-title">
-            Professional Video <br />
-            <span className="highlight">Conferencing</span>
+            Professional Screen <br />
+            <span className="highlight">Sharing Platform</span>
           </h1>
           <p className="hero-description">
-            Enterprise-grade video calling and screen sharing solution.
-            Connect with your team securely from anywhere in the world.
+            Enterprise-grade screen sharing solution.
+            Share your screen and collaborate with your team from anywhere in the world.
           </p>
 
           <div className="features-grid">
             <div className="feature-card">
               <div className="feature-icon-wrapper">
-                <span className="feature-icon">📹</span>
-              </div>
-              <div className="feature-content">
-                <h3>HD Video Quality</h3>
-                <p>Crystal clear 1080p video streaming</p>
-              </div>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon-wrapper">
                 <span className="feature-icon">🖥️</span>
               </div>
               <div className="feature-content">
-                <h3>Screen Sharing</h3>
-                <p>Share your screen with one click</p>
+                <h3>HD Screen Sharing</h3>
+                <p>Crystal clear 1080p @ 60fps screen streaming</p>
               </div>
             </div>
             <div className="feature-card">
               <div className="feature-icon-wrapper">
-                <span className="feature-icon">🎤</span>
+                <span className="feature-icon">🔊</span>
               </div>
               <div className="feature-content">
-                <h3>Clear Audio</h3>
-                <p>Echo cancellation & noise suppression</p>
+                <h3>System Audio</h3>
+                <p>Share screen with system audio included</p>
+              </div>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon-wrapper">
+                <span className="feature-icon">👥</span>
+              </div>
+              <div className="feature-content">
+                <h3>Multi-User Support</h3>
+                <p>Multiple participants can share screens</p>
               </div>
             </div>
             <div className="feature-card">
@@ -82,16 +82,16 @@ const Home = () => {
 
           <div className="stats">
             <div className="stat-item">
-              <div className="stat-number">99.9%</div>
-              <div className="stat-label">Uptime</div>
+              <div className="stat-number">60fps</div>
+              <div className="stat-label">Frame Rate</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-number">1080p</div>
+              <div className="stat-label">Quality</div>
             </div>
             <div className="stat-item">
               <div className="stat-number">&lt; 50ms</div>
               <div className="stat-label">Latency</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-number">HD</div>
-              <div className="stat-label">Quality</div>
             </div>
           </div>
         </div>

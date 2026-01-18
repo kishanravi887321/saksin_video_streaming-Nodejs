@@ -40,11 +40,8 @@ const Room = () => {
   useEffect(() => {
     const initRoom = async () => {
       try {
-        console.log('🎯 Initializing room...');
-        // Start media first
-        await startMedia();
-        
-        // Then join room
+        console.log('🎯 Initializing room (screen share only mode)...');
+        // Join room without starting camera/mic
         joinRoom(urlRoomId, { userName });
       } catch (error) {
         console.error('Error initializing room:', error);
@@ -90,35 +87,32 @@ const Room = () => {
       </div>
 
       <div className="video-grid">
-        {/* Local video - show as small when screen sharing */}
-        {localStream && (
-          <div className={`video-wrapper ${isScreenSharing ? 'small-video' : ''}`}>
-            <VideoPlayer
-              stream={localStream}
-              muted={true}
-              userName={userName}
-              isLocal={true}
-            />
+        {/* Screen Share Only Mode - No local camera */}
+        
+        {/* Show message when no screens are being shared */}
+        {remoteStreams.size === 0 && !isScreenSharing && (
+          <div className="no-streams-message">
+            <div className="message-content">
+              <span className="message-icon">🖥️</span>
+              <h3>No screens being shared</h3>
+              <p>Click the screen share button below to start sharing your screen</p>
+            </div>
           </div>
         )}
 
-        {/* Don't show your own screen share to yourself */}
-        {/* Screen share is only visible to other users */}
-
-        {/* Remote videos */}
+        {/* Remote screens being shared */}
         {Array.from(remoteStreams.entries()).map(([socketId, stream]) => {
           const user = users.find((u) => u.socketId === socketId);
-          const isScreenShare = user?.hasScreen;
           
           return (
             <div 
               key={socketId} 
-              className={`video-wrapper ${isScreenShare ? 'screen-share' : ''}`}
+              className="video-wrapper screen-share"
             >
               <VideoPlayer
                 stream={stream}
                 muted={false}
-                userName={isScreenShare ? `${user?.userName || 'User'}'s Screen` : (user?.userName || 'User')}
+                userName={`${user?.userName || 'User'}'s Screen`}
                 isLocal={false}
               />
             </div>
@@ -128,11 +122,7 @@ const Room = () => {
 
       <div className="controls-container">
         <Controls
-          isVideoOn={isVideoOn}
-          isAudioOn={isAudioOn}
           isScreenSharing={isScreenSharing}
-          onToggleVideo={toggleVideo}
-          onToggleAudio={toggleAudio}
           onToggleScreenShare={handleToggleScreenShare}
           onLeaveRoom={handleLeaveRoom}
         />
