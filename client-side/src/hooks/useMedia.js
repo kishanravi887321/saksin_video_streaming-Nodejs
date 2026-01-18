@@ -77,9 +77,25 @@ export const useMedia = () => {
       console.log('🖥️ Starting screen share with stream ID:', stream.id);
       console.log('🖥️ Screen tracks:', stream.getTracks().map(t => `${t.kind}: ${t.id}`));
       
+      // Notify server first
+      console.log('📤 Notifying server of screen share start');
+      socketService.startScreenShare(roomId);
+      
       // Send screen share tracks to all peers
       const peerConnections = webrtcService.peerConnections;
       console.log('🖥️ Number of peer connections:', peerConnections.size);
+      
+      // If no peer connections yet, just store the stream
+      // It will be added when peers join
+      if (peerConnections.size === 0) {
+        console.log('✅ No peers yet, screen stream ready for future connections');
+        // Handle screen share stop (user clicks browser's stop button)
+        stream.getVideoTracks()[0].onended = () => {
+          console.log('🛑 Screen share ended by user');
+          stopScreenShare();
+        };
+        return stream;
+      }
       
       for (const [socketId, pc] of peerConnections) {
         console.log('📤 Processing peer:', socketId);
@@ -151,10 +167,6 @@ export const useMedia = () => {
         }
       }
       
-      // Notify server
-      console.log('📤 Notifying server of screen share start');
-      socketService.startScreenShare(roomId);
-
       // Handle screen share stop (user clicks browser's stop button)
       stream.getVideoTracks()[0].onended = () => {
         console.log('🛑 Screen share ended by user');

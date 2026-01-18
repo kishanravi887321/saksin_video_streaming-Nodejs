@@ -60,6 +60,16 @@ const Room = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlRoomId, userName]);
 
+  // Debug: Log state changes
+  useEffect(() => {
+    console.log('📊 Room state:', {
+      users: users.length,
+      remoteStreams: remoteStreams.size,
+      isScreenSharing,
+      screenStream: !!screenStream
+    });
+  }, [users, remoteStreams, isScreenSharing, screenStream]);
+
   const handleToggleScreenShare = () => {
     if (isScreenSharing) {
       stopScreenShare();
